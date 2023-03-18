@@ -21,3 +21,10 @@ $cosmosDbConnString="[CONN STRING HERE]"
 $serviceBusConnString="[CONN STRING HERE]"
 docker run -it --rm -p 5006:5006 --name trading -e MongoDbSettings__ConnectionString=$cosmosDbConnString -e ServiceBusSettings__ConnectionString=$serviceBusConnString -e ServiceSettings__MessageBroker="SERVICEBUS" play.trading:$version
 ```
+## Publishing the Docker image
+```powershell
+$acrname="azacreconomy"
+az acr login --name $acrname
+docker tag play.trading:$version "$acrname.azurecr.io/play.trading:$version"
+docker push "$acrname.azurecr.io/play.trading:$version"
+```
