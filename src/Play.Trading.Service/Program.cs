@@ -1,6 +1,7 @@
 using GreenPipes;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
+using Play.Common.HealthChecks;
 using Play.Common.Identity;
 using Play.Common.MassTransit;
 using Play.Common.MongoDB;
@@ -37,10 +38,13 @@ builder.Services.AddMongo()
 AddMassTransit(builder.Services);
 
 
+
 builder.Services.AddSingleton<IUserIdProvider, UserIdProvider>()
     .AddSingleton<MessageHub>()
     .AddSignalR();
 
+builder.Services.AddHealthChecks()
+    .AddMongoDb();
 
 var app = builder.Build();
 string AllowedOriginSetting = "AllowedOrigin";
@@ -69,6 +73,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapHub<MessageHub>("/messagehub");
+
+app.MapPlayEconomyHealtChecks();
 
 app.Run();
 
